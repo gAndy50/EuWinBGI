@@ -5,7 +5,7 @@ Copyright (c) 2021
 
 
 Paypal: paypal.me/IcyViking
-Patreon: https://www.youtube.com/watch?v=4OaHB0JbJDI&t=12s
+Patreon: https://www.patreon.com/CrazyVikingGamer
 
 ABOUT:
 
