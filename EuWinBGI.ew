@@ -1,0 +1,1030 @@
+--------------------------------
+--EuWinBGI					  --
+--Written by Andy P.		  --
+--Icy Viking Games			  --
+--Euphoria Wrapper for WinBGI --
+--Copyright (c) 20201		  --
+--------------------------------
+include std/machine.e
+include std/dll.e
+include std/os.e
+
+atom bgi = 0
+
+ifdef WIN32 then
+	bgi = open_dll("bgi.dll")
+	elsifdef LINUX or FREEBSD then
+	bgi = open_dll("bgi.so")
+end ifdef
+
+--Flags
+
+public constant KEY_HOME = 71
+public constant KEY_UP = 72
+public constant KEY_PGUP = 73
+public constant KEY_LEFT = 75
+public constant KEY_CENTER = 76
+public constant KEY_RIGHT = 77
+public constant KEY_END = 79
+public constant KEY_DOWN = 80
+public constant KEY_PGDN = 81
+public constant KEY_INSERT = 82
+public constant KEY_DELETE = 83
+public constant KEY_F1 = 59
+public constant KEY_F2 = 60
+public constant KEY_F3 = 61
+public constant KEY_F4 = 62
+public constant KEY_F5 = 63
+public constant KEY_F6 = 64
+public constant KEY_F7 = 65
+public constant KEY_F8 = 66
+public constant KEY_F9 = 67
+
+--Line thickness
+public constant NORM_WIDTH = 1
+public constant THICK_WIDTH = 3
+
+public constant USER_CHAR_SIZE = 0
+public constant HORIZ_DIR = 0
+public constant VERT_DIRT = 1
+
+public constant CURRENT_WINDOW = -1
+public constant ALL_WINDOWS = -2
+public constant NO_CURRENT_WINDOW = -3
+
+public constant MAXCOLORS = 15
+
+public enum BLACK,GREEN,CYAN,RED,MAGENTA,BROWN,LIGHTGRAY,DARKGRAY,
+			LIGHTBLUE,LIGHTGREEN,LIGHRCYAN,LIGHTRED,LIGHTMAGENTA,YELLOW,WHITE
+			
+public enum SOLID_LINE,DOTTED_LINE,CENTER_LINE,DASHED_LINE,USERBIT_LINE
+
+public enum EMPTY_FILL,SOLID_FILL,LINE_FILL,LTSLASH_FILL,SLASH_FILL,
+			BKSLASH_FILL,LTBKSLASH_FILL,HATCH_FILL,XHATCH_FILL,INTERLEAVE_FILL,
+			WIDE_DOT_FILL,CLOSE_DOT_FILL,USER_FILL
+			
+public enum DETECT,CGA,MCGA,EGA,EGA64,EGAMONO,IBM8514,HERCMONO,
+			ATT400,VGA,PC3270
+			
+public enum CGAC0, CGAC1,CGAC2,CGAC3,CGAHI,
+			MCGAC0 = 0,MCGAC1,MCGAC2,MCGAC3,MCGAMED,MCGAHI,
+			EGALO = 0,EGAHI,
+			EGA64LO = 0,EGA64HI,
+			EGAMONOHI = 3,
+			HERCMONOHI = 0,
+			ATT400C0 = 0,ATT400C1,ATT400C2,ATT400C3,ATT400MED,ATT400HI,
+			VGALO = 0,VGAMED,VGAHI,
+			PC3270HI = 0,
+			IBM8514LO = 0,IBM6514HI
+			
+public constant NO_CLICK = -1
+
+public constant INT_MAX = 2147483647
+
+public enum grInvalidVersion = -18, grInvalidDeviceNum = -15,grInvalidFontNum,
+			grInvalidFont,grIOerror,grError,grInvalidMode,grNoFontMem,
+			grFontNotFound,grNoFloodMem,grNoScanMem,grNoLoadMem,
+			grInvalidDriver,grFileNotFound,grNotDetected,grNoInitGraph,
+			grOk
+			
+public enum COPY_PUT,XOR_PUT,OR_PUT,AND_PUT,NOT_PUT
+
+public enum LEFT_TEXT,CENTER_TEXT,RIGHT_TEXT
+public enum BOTTOM_TEXT ,VCENTER_TEXT,TOP_TEXT
+public enum DEFAULT_FONT ,TRIPLEX_FONT,SMALL_FONT,SANS_SERIF_FONT,
+			GOTHIC_FONT,SCRIPT_FONT,SIMPLEX_FONT,TRIPLEX_SCR_FONT,
+			COMPLEX_FONT,EUROPEAN_FONT,BOLD_FONT
+
+--Shape Functions
+public constant xarc = define_c_proc(bgi,"+arc",{C_INT,C_INT,C_INT,C_INT,C_INT})
+
+public procedure arc(atom x,atom y,atom st,atom ea,atom rad)
+
+ c_proc(xarc,{x,y,st,ea,rad})
+	
+end procedure
+
+public constant xbar = define_c_proc(bgi,"+bar",{C_INT,C_INT,C_INT,C_INT})
+
+public procedure bar(atom left,atom top,atom right,atom bot)
+
+ c_proc(xbar,{left,top,right,bot})
+	
+end procedure
+
+public constant xbar3d = define_c_proc(bgi,"+bar3d",{C_INT,C_INT,C_INT,C_INT,C_INT,C_INT})
+
+public procedure bar3d(atom left,atom top,atom right,atom bot,atom dep,atom flag)
+
+ c_proc(xbar3d,{left,top,right,bot,dep,flag})
+	
+end procedure
+
+public constant xcircle = define_c_proc(bgi,"+circle",{C_INT,C_INT,C_INT})
+
+public procedure circle(atom x,atom y,atom rad)
+
+ c_proc(xcircle,{x,y,rad})
+	
+end procedure
+
+public constant xcleardevice = define_c_proc(bgi,"+cleardevice",{})
+
+public procedure cleardevice()
+
+ c_proc(xcleardevice,{})
+	
+end procedure
+
+public constant xclearviewport = define_c_proc(bgi,"+clearviewport",{})
+
+public procedure clearviewport()
+
+ c_proc(xclearviewport,{})
+	
+end procedure
+
+public constant xdrawpoly = define_c_proc(bgi,"+drawpoly",{C_INT,C_POINTER})
+
+public procedure drawpoly(atom n_pts,atom pts)
+
+ c_proc(xdrawpoly,{n_pts,pts})
+	
+end procedure
+
+public constant xellipse = define_c_proc(bgi,"+ellipse",{C_INT,C_INT,C_INT,C_INT,C_INT,C_INT})
+
+public procedure ellipse(atom x,atom y,atom st,atom en,atom xrad,atom yrad)
+
+ c_proc(xellipse,{x,y,st,en,xrad,yrad})
+	
+end procedure
+
+public constant xfillellipse = define_c_proc(bgi,"+fillellipse",{C_INT,C_INT,C_INT,C_INT})
+
+public procedure fillellipse(atom x,atom y,atom xrad,atom yrad)
+
+ c_proc(xfillellipse,{x,y,xrad,yrad})
+	
+end procedure
+
+public constant xfillpoly = define_c_proc(bgi,"+fillpoly",{C_INT,C_POINTER})
+
+public procedure fillpoly(atom n_pts,atom pts)
+
+ c_proc(xfillpoly,{n_pts,pts})
+	
+end procedure
+
+public constant xfloodfill = define_c_proc(bgi,"+floodfill",{C_INT,C_INT,C_INT})
+
+public procedure floodfill(atom x,atom y,atom bord)
+
+ c_proc(xfloodfill,{x,y,bord})
+	
+end procedure
+
+public constant xline = define_c_proc(bgi,"+line",{C_INT,C_INT,C_INT,C_INT})
+
+public procedure line(atom x,atom y,atom x2,atom y2)
+
+ c_proc(xline,{x,y,x2,y2})
+	
+end procedure
+
+public constant xlinerel = define_c_proc(bgi,"+linerel",{C_INT,C_INT})
+
+public procedure linerel(atom x,atom y)
+
+ c_proc(xlinerel,{x,y})
+	
+end procedure
+
+public constant xlineto = define_c_proc(bgi,"+lineto",{C_INT,C_INT})
+
+public procedure lineto(atom x,atom y)
+
+ c_proc(xlineto,{x,y})
+	
+end procedure
+
+public constant xpieslice = define_c_proc(bgi,"+pieslice",{C_INT,C_INT,C_INT,C_INT,C_INT})
+
+public procedure pieslice(atom x,atom y,atom st,atom en,atom rad)
+
+ c_proc(xpieslice,{x,y,st,en,rad})
+	
+end procedure
+
+public constant xputpixel = define_c_proc(bgi,"+putpixel",{C_INT,C_INT,C_INT})
+
+public procedure putpixel(atom x,atom y,atom col)
+
+ c_proc(xputpixel,{x,y,col})
+	
+end procedure
+
+public constant xrectangle = define_c_proc(bgi,"+rectangle",{C_INT,C_INT,C_INT,C_INT})
+
+public procedure rectangle(atom left,atom top,atom right,atom bot)
+
+ c_proc(xrectangle,{left,top,right,bot})
+	
+end procedure
+
+public constant xsector = define_c_proc(bgi,"+sector",{C_INT,C_INT,C_INT,C_INT,C_INT,C_INT})
+
+public procedure sector(atom x,atom y,atom st,atom en,atom xrad,atom yrad)
+
+ c_proc(xsector,{x,y,st,en,xrad,yrad})
+	
+end procedure
+
+--Misc Functions
+
+public constant xgetdisplaycolor = define_c_func(bgi,"+getdisplaycolor",{C_INT},C_INT)
+
+public function getdisplaycolor(atom col)
+
+ return c_func(xgetdisplaycolor,{col})
+	
+end function
+
+public constant xconverttorgb = define_c_func(bgi,"+converttorgb",{C_INT},C_INT)
+
+public function converttorgb(atom col)
+
+ return c_func(xconverttorgb,{col})
+	
+end function
+
+public constant xdelay = define_c_proc(bgi,"+delay",{C_INT})
+
+public procedure delay(atom sec)
+
+ c_proc(xdelay,{sec})
+	
+end procedure
+
+public constant xgetarccoords = define_c_proc(bgi,"+getarccoords",{C_INT,C_INT,C_INT,C_INT,C_INT,C_INT})
+
+public procedure getarccoords(atom x,atom y,atom xst,atom yst,atom xen,atom yen)
+
+ c_proc(xgetarccoords,{x,y,xst,yst,xen,yen})
+	
+end procedure
+
+public constant xgetbkcolor = define_c_func(bgi,"+getbkcolor",{},C_INT)
+
+public function getbkcolor()
+
+ return c_func(xgetbkcolor,{})
+	
+end function
+
+public constant xgetcolor = define_c_func(bgi,"+getcolor",{},C_INT)
+
+public function getcolor()
+
+ return c_func(xgetcolor,{})
+	
+end function
+
+public constant xgetfillpattern = define_c_proc(bgi,"+getfillpattern",{C_POINTER})
+
+public procedure getfillpattern(atom pat)
+
+ c_proc(xgetfillpattern,{pat})
+	
+end procedure
+
+public constant xgetfillsettings = define_c_proc(bgi,"+getfillsettings",{C_INT,C_INT})
+
+public procedure getfillsettings(atom pat,atom col)
+
+ c_proc(xgetfillsettings,{pat,col})
+	
+end procedure
+
+public constant xgetlinesettings = define_c_proc(bgi,"+getlinesettings",{C_INT,C_UINT,C_INT})
+
+public procedure getlinesettings(atom style,atom pat,atom thick)
+
+ c_proc(xgetlinesettings,{style,pat,thick})
+	
+end procedure
+
+public constant xgetmaxcolor = define_c_func(bgi,"+getmaxcolor",{},C_INT)
+
+public function getmaxcolor()
+
+ return c_func(xgetmaxcolor,{})
+	
+end function
+
+public constant xgetmaxheight = define_c_func(bgi,"+getmaxheight",{},C_INT)
+
+public function getmaxheight()
+
+ return c_func(xgetmaxheight,{})
+	
+end function
+
+public constant xgetmaxwidth = define_c_func(bgi,"+getmaxwidth",{},C_INT)
+
+public function getmaxwidth()
+
+ return c_func(xgetmaxwidth,{})
+	
+end function
+
+public constant xgetmaxx = define_c_func(bgi,"+getmaxx",{},C_INT)
+
+public function getmaxx()
+
+ return c_func(xgetmaxx,{})
+	
+end function
+
+public constant xgetmaxy = define_c_func(bgi,"+getmaxy",{},C_INT)
+
+public function getmaxy()
+
+ return c_func(xgetmaxy,{})
+	
+end function
+
+public constant xgetrefreshbgi = define_c_func(bgi,"+getrefreshbgi",{},C_BOOL)
+
+public function getrefreshbgi()
+
+ return c_func(xgetrefreshbgi,{})
+	
+end function
+
+public constant xgetwindowheight = define_c_func(bgi,"+getwindowheight",{},C_INT)
+
+public function getwindowheight()
+
+ return c_func(xgetwindowheight,{})
+	
+end function
+
+public constant xgetwindowwidth = define_c_func(bgi,"+getwindowwidth",{},C_INT)
+
+public function getwindowwidth()
+
+ return c_func(xgetwindowwidth,{})
+	
+end function
+
+public constant xgetpixel = define_c_func(bgi,"+getpixel",{C_INT,C_INT},C_INT)
+
+public function getpixel(atom x,atom y)
+
+ return c_func(xgetpixel,{x,y})
+	
+end function
+
+public constant xgetviewsettings = define_c_proc(bgi,"+getviewsettings",{C_INT,C_INT,C_INT,C_INT,C_INT})
+
+public procedure getviewsettings(atom left,atom top,atom right,atom bot,atom clip)
+
+ c_proc(xgetviewsettings,{left,top,right,bot,clip})
+	
+end procedure
+
+public constant xgetx = define_c_func(bgi,"+getx",{},C_INT)
+
+public function getx()
+
+ return c_func(xgetx,{})
+	
+end function
+
+public constant xgety = define_c_func(bgi,"+gety",{},C_INT)
+
+public function gety()
+
+ return c_func(xgety,{})
+	
+end function
+
+public constant xmoverel = define_c_proc(bgi,"+moverel",{C_INT,C_INT})
+
+public procedure moverel(atom x,atom y)
+
+ c_proc(xmoverel,{x,y})
+	
+end procedure
+
+public constant xmoveto = define_c_proc(bgi,"+moveto",{C_INT,C_INT})
+
+public procedure moveto(atom x,atom y)
+
+ c_proc(xmoveto,{x,y})
+	
+end procedure
+
+public constant xrefreshbgi = define_c_proc(bgi,"+refreshbgi",{C_INT,C_INT,C_INT,C_INT})
+
+public procedure refreshbgi(atom left,atom top,atom right,atom bot)
+
+ c_proc(xrefreshbgi,{left,top,right,bot})
+	
+end procedure
+
+public constant xrefreshallbgi = define_c_proc(bgi,"+refreshallbgi",{})
+
+public procedure refreshallbgi()
+
+ c_proc(xrefreshallbgi,{})
+	
+end procedure
+
+public constant xsetbkcolor = define_c_proc(bgi,"+setbkcolor",{C_INT})
+
+public procedure setbkcolor(atom col)
+
+ c_proc(xsetbkcolor,{col})
+	
+end procedure
+
+public constant xsetcolor = define_c_proc(bgi,"+setcolor",{C_INT})
+
+public procedure setcolor(atom col)
+
+ c_proc(xsetcolor,{col})
+	
+end procedure
+
+public constant xsetfillpattern = define_c_proc(bgi,"+setfillpattern",{C_POINTER,C_INT})
+
+public procedure setfillpattern(atom pat,atom col)
+
+ c_proc(xsetfillpattern,{pat,col})
+	
+end procedure
+
+public constant xsetfillstyle = define_c_proc(bgi,"+setfillestyle",{C_INT,C_INT})
+
+public procedure setfillstyle(atom pat,atom col)
+
+ c_proc(xsetfillstyle,{pat,col})
+	
+end procedure
+
+public constant xsetlinestyle = define_c_proc(bgi,"+setlinestyle",{C_INT,C_UINT,C_INT})
+
+public procedure setlinestyle(atom style,atom pat,atom thick)
+
+ c_proc(xsetlinestyle,{style,pat,thick})
+	
+end procedure
+
+public constant xsetfreshingbgi = define_c_proc(bgi,"+setrefreshingbgi",{C_BOOL})
+
+public procedure setfreshingbgi(integer val)
+
+ c_proc(xsetfreshingbgi,{val})
+	
+end procedure
+
+public constant xsetviewport = define_c_proc(bgi,"+setviewport",{C_INT,C_INT,C_INT,C_INT,C_INT})
+
+public procedure setviewport(atom left,atom top,atom right,atom bot,atom clip)
+
+ c_proc(xsetviewport,{left,top,right,bot,clip})
+	
+end procedure
+
+public constant xsetwritemode = define_c_proc(bgi,"+setwritemode",{C_INT})
+
+public procedure setwritemode(atom mode)
+
+ c_proc(xsetwritemode,{mode})
+	
+end procedure
+
+public constant xgetch = define_c_func(bgi,"+getch",{},C_INT)
+
+public function getch()
+
+ return c_func(xgetch,{})
+	
+end function
+
+public constant xkbhit = define_c_func(bgi,"+kbhit",{},C_INT)
+
+public function kbhit()
+
+ return c_func(xkbhit,{})
+	
+end function
+
+--Window/Graphics Functions
+
+public constant xclosegraph = define_c_proc(bgi,"+closegraph",{C_INT})
+
+public procedure closegraph(atom wid=ALL_WINDOWS)
+
+ c_proc(xclosegraph,{wid})
+	
+end procedure
+
+public constant xdetectgraph = define_c_proc(bgi,"+detectgraph",{C_POINTER,C_POINTER})
+
+public procedure detectgraph(atom drv,atom mode)
+
+ c_proc(xdetectgraph,{drv,mode})
+	
+end procedure
+
+public constant xgetaspectratio = define_c_proc(bgi,"+getaspectratio",{C_POINTER,C_POINTER})
+
+public procedure getaspectratio(atom x,atom y)
+
+ c_proc(xgetaspectratio,{x,y})
+	
+end procedure
+
+public constant xgetdrivername = define_c_func(bgi,"+getdrivername",{},C_POINTER)
+
+public function getdrivername()
+
+ return c_func(xgetdrivername,{})
+	
+end function
+
+public constant xgetgraphmode = define_c_func(bgi,"+getgraphmode",{},C_INT)
+
+public function getgraphmode()
+
+ return c_func(xgetgraphmode,{})
+	
+end function
+
+public constant xgetmaxmode = define_c_func(bgi,"+getmaxmode",{},C_INT)
+
+public function getmaxmode()
+
+ return c_func(xgetmaxmode,{})
+	
+end function
+
+public constant xgetmodename = define_c_func(bgi,"+getmodename",{C_INT},C_POINTER)
+
+public function getmodename(atom num)
+
+ return c_func(xgetmodename,{num})
+	
+end function
+
+public constant xgetmoderange = define_c_proc(bgi,"+getmoderange",{C_INT,C_POINTER,C_POINTER})
+
+public procedure getmoderange(atom drv,atom lo,atom hi)
+
+ c_proc(xgetmoderange,{drv,lo,hi})
+	
+end procedure
+
+public constant xgraphdefaults = define_c_proc(bgi,"+graphdefaults",{})
+
+public procedure graphdefaults()
+
+ c_proc(xgraphdefaults,{})
+	
+end procedure
+
+public constant xgrapherrormsg = define_c_func(bgi,"+grapherrormsg",{C_INT},C_POINTER)
+
+public function grapherrormsg(atom code)
+
+ return c_func(xgrapherrormsg,{code})
+	
+end function
+
+public constant xgraphresult = define_c_func(bgi,"+graphresult",{},C_INT)
+
+public function graphresult()
+
+ return c_func(xgraphresult,{})
+	
+end function
+
+public constant xinitgraph = define_c_proc(bgi,"+initgraph",{C_POINTER,C_POINTER,C_POINTER})
+
+public procedure initgraph(atom drv,atom mode,sequence path)
+
+ atom str = allocate_string(path,1)
+ 
+ c_proc(xinitgraph,{drv,mode,str})
+	
+end procedure
+
+public constant xinitwindow = define_c_func(bgi,"+initwindow",{C_INT,C_INT,C_POINTER,C_INT,C_INT,C_BOOL,C_BOOL},C_INT)
+
+public function initwindow(atom w,atom h,sequence title,atom left=0,atom top=0,atom dbflag=0,atom cflag=1)
+
+ atom str = allocate_string(title,1)
+ 
+ return c_func(xinitwindow,{w,h,str,left,top,dbflag,cflag})
+	
+end function
+
+public constant xinstalluserdriver = define_c_func(bgi,"+installuserdriver",{C_POINTER,C_POINTER},C_INT)
+
+public function installuserdriver(sequence name,atom fp)
+
+ atom str = allocate_string(name,1)
+ 
+ return c_func(xinstalluserdriver,{str,fp})
+	
+end function
+
+public constant xinstalluserfont = define_c_func(bgi,"+installuserfont",{C_POINTER},C_INT)
+
+public function installuserfont(sequence name)
+
+ atom str = allocate_string(name,1)
+ 
+ return c_func(xinstalluserfont,{str})
+	
+end function
+
+public constant xregisterbgidriver = define_c_func(bgi,"+registerbgidriver",{C_POINTER},C_INT)
+
+public function registerbgidriver(atom drv)
+
+ return c_func(xregisterbgidriver,{drv})
+	
+end function
+
+public constant xregisterbgifont = define_c_func(bgi,"+registerbgifont",{C_POINTER},C_INT)
+
+public function registerbgifont(atom font)
+
+ return c_func(xregisterbgifont,{font})
+	
+end function
+
+public constant xrestorecrtmode = define_c_proc(bgi,"+restorecrtmode",{})
+
+public procedure restorecrtmode()
+
+ c_proc(xrestorecrtmode,{})
+	
+end procedure
+
+public constant xsetaspectratio = define_c_proc(bgi,"+setaspectratio",{C_INT,C_INT})
+
+public procedure setaspectratio(atom x,atom y)
+
+ c_proc(xsetaspectratio,{x,y})
+	
+end procedure
+
+public constant xsetgraphbufsize = define_c_func(bgi,"+setgraphbufsize",{C_UINT},C_UINT)
+
+public function setgraphbufsize(atom buf)
+
+ return c_func(xsetgraphbufsize,{buf})
+	
+end function
+
+public constant xsetgraphmode = define_c_proc(bgi,"+setgraphmode",{C_INT})
+
+public procedure setgraphmode(atom mode)
+
+ c_proc(xsetgraphmode,{mode})
+	
+end procedure
+
+public constant xshowerrorbox = define_c_proc(bgi,"+showerrorbox",{C_POINTER})
+
+public procedure showerrorbox(sequence msg)
+
+ atom str = allocate_string(msg,1)
+ 
+ c_proc(xshowerrorbox,{str})
+	
+end procedure
+
+public constant xgetcurrentwindow = define_c_func(bgi,"+getcurrentwindow",{},C_INT)
+
+public function getcurrentwindow()
+
+ return c_func(xgetcurrentwindow,{})
+	
+end function
+
+public constant xsetcurrentwindow = define_c_proc(bgi,"+setcurrentwindow",{C_INT})
+
+public procedure setcurrentwindow(atom win)
+
+ c_proc(xsetcurrentwindow,{win})
+	
+end procedure
+
+--double buffer functions
+
+public constant xgetactivepage = define_c_func(bgi,"+getactivepage",{},C_INT)
+
+public function getactivepage()
+
+ return c_func(xgetactivepage,{})
+	
+end function
+
+public constant xgetvisualpage = define_c_func(bgi,"+getvisualpage",{},C_INT)
+
+public function getvisualpage()
+
+ return c_func(xgetvisualpage,{})
+	
+end function
+
+public constant xsetactivepage = define_c_proc(bgi,"+setactivepage",{C_INT})
+
+public procedure setactivepage(atom pg)
+
+ c_proc(xsetactivepage,{pg})
+	
+end procedure
+
+public constant xsetvisualpage = define_c_proc(bgi,"+setvisualpage",{C_INT})
+
+public procedure setvisualpage(atom pg)
+
+ c_proc(xsetvisualpage,{pg})
+	
+end procedure
+
+public constant xswapbuffers = define_c_proc(bgi,"+swapbuffers",{})
+
+public procedure swapbuffers()
+
+ c_proc(xswapbuffers,{})
+	
+end procedure
+
+public constant ximagesize = define_c_func(bgi,"+imagesize",{C_INT,C_INT,C_INT,C_INT},C_UINT)
+
+public function imagesize(atom left,atom top,atom right,atom bot)
+
+ return c_func(ximagesize,{left,top,right,bot})
+	
+end function
+
+public constant xgetimage = define_c_proc(bgi,"+getimage",{C_INT,C_INT,C_INT,C_INT,C_POINTER})
+
+public procedure getimage(atom left,atom top,atom right,atom bot,object bit)
+
+ c_proc(xgetimage,{left,top,right,bot,bit})
+	
+end procedure
+
+public constant xputimage = define_c_proc(bgi,"+putimage",{C_INT,C_INT,C_POINTER,C_INT})
+
+public procedure putimage(atom left,atom top,object bit,atom op)
+
+ c_proc(xputimage,{left,top,bit,op})
+	
+end procedure
+
+public constant xprintimage = define_c_proc(bgi,"+printimage",{C_POINTER,C_DOUBLE,C_DOUBLE,C_DOUBLE,C_INT,C_INT,C_INT,C_INT,C_BOOL,C_HWND})
+
+public procedure printimage(sequence title,atom width_inch=7,atom left_inch=0.75,atom top_inch=0.75,atom left=0,atom right=0,atom top=INT_MAX,atom bot=INT_MAX,atom active=0,atom hwnd=0)
+
+ atom str = allocate_string(title,1)
+
+ c_proc(xprintimage,{str,width_inch,left_inch,top_inch,left,right,top,bot,active,hwnd})
+	
+end procedure
+
+public constant xreadimagefile = define_c_proc(bgi,"+readimagefile",{C_POINTER,C_INT,C_INT,C_INT,C_INT})
+
+public procedure readimagefile(sequence title,atom left=0,atom top=0,atom right=INT_MAX,atom bot=INT_MAX)
+
+ atom str = allocate_string(title,1)
+ 
+ c_proc(xreadimagefile,{str,left,top,right,bot})
+	
+end procedure
+
+public constant xwriteimagefile = define_c_proc(bgi,"+writeimagefile",{C_POINTER,C_INT,C_INT,C_INT,C_INT,C_BOOL,C_HWND})
+
+public procedure writeimagefile(sequence title,atom left=0,atom top=0,atom right=INT_MAX,atom bot=INT_MAX,atom active=0,atom hwnd=0)
+
+ atom str = allocate_string(title,1)
+ 
+ c_proc(xwriteimagefile,{str,left,top,right,bot,active,hwnd})
+	
+end procedure
+
+--Text Functions
+
+public constant xgettextsettings = define_c_proc(bgi,"+gettextsettings",{C_INT,C_INT,C_INT,C_INT,C_INT})
+
+public procedure gettextsettings(atom font,atom xdir,atom size,atom hor,atom ver)
+
+ c_proc(xgettextsettings,{font,xdir,size,hor,ver})
+	
+end procedure
+
+public constant xouttext = define_c_proc(bgi,"+outtext",{C_POINTER})
+
+public procedure outtext(sequence txt)
+
+ atom str = allocate_string(txt,1)
+ 
+ c_proc(xouttext,{str})
+	
+end procedure
+
+public constant xouttextxy = define_c_proc(bgi,"+outtextxy",{C_INT,C_INT,C_POINTER})
+
+public procedure outtextxy(atom x,atom y,sequence txt)
+
+ atom str = allocate_string(txt,1)
+ 
+ c_proc(xouttextxy,{x,y,str})
+	
+end procedure
+
+public constant xsettextjustify = define_c_proc(bgi,"+settextjustify",{C_INT,C_INT})
+
+public procedure settextjustify(atom hor,atom ver)
+
+ c_proc(xsettextjustify,{hor,ver})
+	
+end procedure
+
+public constant xsettextstyle = define_c_proc(bgi,"+settextstyle",{C_INT,C_INT,C_INT})
+
+public procedure settextstyle(atom font,atom xdir,atom size)
+
+ c_proc(xsettextstyle,{font,xdir,size})
+	
+end procedure
+
+public constant xsetusercharsize = define_c_proc(bgi,"+setusercharsize",{C_INT,C_INT,C_INT,C_INT})
+
+public procedure setusercharsize(atom mx,atom dx,atom my,atom dy)
+
+ c_proc(xsetusercharsize,{mx,dx,my,dy})
+	
+end procedure
+
+public constant xtextheight = define_c_func(bgi,"+textheight",{C_POINTER},C_INT)
+
+public function textheight(sequence txt)
+
+ atom str = allocate_string(txt,1)
+ 
+ return c_func(xtextheight,{str})
+	
+end function
+
+public constant xtextwidth = define_c_func(bgi,"+textwidth",{C_POINTER},C_INT)
+
+public function textwidth(sequence txt)
+
+ atom str = allocate_string(txt,1)
+ 
+ return c_func(xtextwidth,{str})
+	
+end function
+
+--Mouse Functions
+
+public constant xclearmouseclick = define_c_proc(bgi,"+clearmouseclick",{C_INT})
+
+public procedure clearmouseclick(atom k)
+
+ c_proc(xclearmouseclick,{k})
+	
+end procedure
+
+public constant xclearresizeevent = define_c_proc(bgi,"+clearresizeevent",{})
+
+public procedure clearresizeevent()
+
+ c_proc(xclearresizeevent,{})
+	
+end procedure
+
+public constant xgetmouseclick = define_c_proc(bgi,"+getmouseclick",{C_INT,C_POINTER,C_POINTER})
+
+public procedure getmouseclick(atom k,atom x,atom y)
+
+ c_proc(xgetmouseclick,{k,x,y})
+	
+end procedure
+
+public constant xismouseclick = define_c_func(bgi,"+ismouseclick",{C_INT},C_BOOL)
+
+public function ismouseclick(atom k)
+
+ return c_func(xismouseclick,{k})
+	
+end function
+
+public constant xisresizeevent = define_c_func(bgi,"+isresizeevent",{},C_BOOL)
+
+public function isresizeevent()
+
+ return c_func(xisresizeevent,{})
+	
+end function
+
+public constant xmousex = define_c_func(bgi,"+mousex",{},C_INT)
+
+public function mousex()
+
+ return c_func(xmousex,{})
+	
+end function
+
+public constant xmousey = define_c_func(bgi,"+mousey",{},C_INT)
+
+public function mousey()
+
+ return c_func(xmousey,{})
+	
+end function
+
+public constant xregistermousehandler = define_c_proc(bgi,"+registermousehandler",{C_INT,C_POINTER,C_INT,C_INT})
+
+public procedure registermousehandler(atom k,atom h,atom x,atom x2)
+
+ c_proc(xregistermousehandler,{k,h,x,x2})
+	
+end procedure
+
+public constant xsetmousequeuestatus = define_c_proc(bgi,"+setmousequeuestatus",{C_INT,C_BOOL})
+
+public procedure setmousequeuestatus(atom k,atom stat=1)
+
+ c_proc(xsetmousequeuestatus,{k,stat})
+	
+end procedure
+
+--Palette Functions
+
+public constant xgetdefaultpalette = define_c_func(bgi,"+getdefaultpalette",{},C_POINTER)
+
+public function getdefaultpalette()
+
+ return c_func(xgetdefaultpalette,{})
+	
+end function
+
+public constant xgetpalette = define_c_proc(bgi,"+getpalette",{C_UCHAR,C_CHAR})
+
+public procedure getpalette(atom size,atom col=MAXCOLORS+1)
+
+ c_proc(xgetpalette,{size,col})
+	
+end procedure
+
+public constant xgetpalettesize = define_c_func(bgi,"+getpalettesize",{},C_INT)
+
+public function getpalettesize()
+
+ return c_func(xgetpalettesize,{})
+	
+end function
+
+public constant xsetallpalette = define_c_proc(bgi,"+setallpalette",{C_UCHAR,C_CHAR})
+
+public procedure setallpalette(atom size,atom col=MAXCOLORS+1)
+
+ c_proc(xsetallpalette,{size,col})
+	
+end procedure
+
+public constant xsetpalette = define_c_proc(bgi,"+setpalette",{C_INT,C_INT})
+
+public procedure setpalette(atom num,atom col)
+
+ c_proc(xsetpalette,{num,col})
+	
+end procedure
+
+public constant xsetrgbpalette = define_c_proc(bgi,"+setrgbpalette",{C_INT,C_INT,C_INT,C_INT})
+
+public procedure setrgbpalette(atom num,atom r,atom g,atom b)
+
+ c_proc(xsetrgbpalette,{num,r,g,b})
+	
+end procedure
+
+public constant xCOLOR = define_c_func(bgi,"+COLOR",{C_INT,C_INT,C_INT},C_INT)
+
+public function COLOR(atom r,atom g,atom b)
+
+ return c_func(xCOLOR,{r,g,b})
+	
+end function
+­94.25

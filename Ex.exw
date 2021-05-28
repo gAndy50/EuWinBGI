@@ -1,0 +1,19 @@
+include std/machine.e
+include std/get.e
+
+include EuWinBGI.ew
+
+atom key = 0
+
+initwindow(400,300,"Simple Circle - Press any key to close/Wait 2 seconds",0,0,0,1)
+
+setcolor(CYAN)
+circle(100,50,40)
+
+setcolor(LIGHTBLUE)
+circle(300,100,40)
+
+while not kbhit() do
+	delay(2000)
+end while
+­17.1
