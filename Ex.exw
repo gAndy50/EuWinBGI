@@ -16,4 +16,6 @@ circle(300,100,40)
 while not kbhit() do
 	delay(2000)
 end while
-­17.1
+
+closegraph(ALL_WINDOWS)
+­20.22
