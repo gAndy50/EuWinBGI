@@ -18,3 +18,5 @@ This software is provided as-is. There is no warranty for this software. You use
 your own risk. You may not hold the developer responsible for anything you do with this software.
 You may not claim you wrote the original wrapper source code. Programs you write using this wrapper
 are free to distribute as you please. 
+
+NOTE: This only runs under the 32-bit version of Euphoria. 
