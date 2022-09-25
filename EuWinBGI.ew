@@ -3,7 +3,7 @@
 --Written by Andy P.		  --
 --Icy Viking Games			  --
 --Euphoria Wrapper for WinBGI --
---Copyright (c) 20201		  --
+--Copyright (c) 2022		  --
 --------------------------------
 include std/machine.e
 include std/dll.e
@@ -1027,4 +1027,4 @@ public function COLOR(atom r,atom g,atom b)
  return c_func(xCOLOR,{r,g,b})
 	
 end function
-­94.25
+Â­94.25
