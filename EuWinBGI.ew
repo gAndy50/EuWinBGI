@@ -3,7 +3,7 @@
 --Written by Andy P.		  --
 --Icy Viking Games			  --
 --Euphoria Wrapper for WinBGI --
---Copyright (c) 2023		  --
+--Copyright (c) 2024	  --
 --------------------------------
 include std/machine.e
 include std/dll.e
