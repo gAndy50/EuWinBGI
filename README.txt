@@ -1,7 +1,7 @@
 Title: EuWinBGI
 Author: Andy P. (Icy Viking)
 Wrapper of WinBGI for Euphoria programming language
-Copyright (c) 2024
+Copyright (c) 2025
 
 
 Paypal: paypal.me/IcyViking
